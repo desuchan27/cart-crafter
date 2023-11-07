@@ -14,9 +14,5 @@ export default function Home() {
     if (!isOpen) onOpen()
   }, [isOpen, onOpen])
 
-  return (
-    <div className='min-h-screen flex flex-col justify-center items-center p-5'>
-      Root Page
-    </div>
-  )
+  return null
 }

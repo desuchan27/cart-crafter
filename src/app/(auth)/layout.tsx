@@ -1,4 +1,4 @@
-import { ModalProvider } from "providers/modalProviders";
+import { ModalProvider } from "providers/modalProvider";
 
 export default function AuthLayout({
     children,
