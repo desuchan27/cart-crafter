@@ -1,4 +1,4 @@
-import Navbar from "@/components/navbar"
+import Navbar from "@/components/Navbar"
 import db from "@/lib/db"
 import { auth } from "@clerk/nextjs"
 import { redirect } from "next/navigation"
