@@ -4,6 +4,7 @@ import { MainNav } from '@/components/MainNav'
 import StoreSwitcher from './StoreSwitcher'
 import { redirect } from 'next/navigation'
 import db from '@/lib/db'
+
 interface navbarProps {
   
 }
