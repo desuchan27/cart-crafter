@@ -1,17 +1,33 @@
-"use client"
-
-import { FC } from 'react'
+import { format } from 'date-fns'
 import BillboardClient from './components/client'
+import db from '@/lib/db'
+import { Billboardcolumn } from './components/columns'
 
-interface pageProps {
-  
-}
+const page = async ({
+  params
+}: {
+  params: { storeId: string }
+}) => {
 
-const page: FC<pageProps> = ({}) => {
+  const billboards = await db.billboard.findMany({
+    where: {
+      storeId: params.storeId
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
+
+  const formattedBillboards: Billboardcolumn[] = billboards.map((item) => ({
+    id: item.id,
+    label: item.label,
+    createdAt: format(new Date(item.createdAt), 'MMM do, yyyy')
+  }))
+
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <BillboardClient />
+        <BillboardClient data={formattedBillboards} />
       </div>
     </div>
   )

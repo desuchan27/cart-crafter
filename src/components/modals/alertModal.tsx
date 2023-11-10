@@ -26,10 +26,6 @@ const AlertModal: FC<AlertModalProps> = ({
 
     if (!isMounted) return null
 
-    /* const onSubmit = () => {
-        onConfirm()
-    } */
-
     return (
         <Modal 
             title='Are you sure?'

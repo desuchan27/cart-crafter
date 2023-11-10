@@ -15,7 +15,6 @@ import toast from "react-hot-toast"
 import axios from "axios"
 import { useRouter, useParams } from "next/navigation"
 import AlertModal from "@/components/modals/alertModal"
-import ApiAlert from "@/components/ui/apiAlert"
 import { useOrigin } from "hooks/useOrigin"
 import ImageUpload from "@/components/ui/imageUpload"
 
@@ -38,8 +37,6 @@ const BillboardForm: FC<BillboardFormProps> = ({
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-
-  const origin = useOrigin()
 
   const title = initialData ? 'Edit Billboard' : 'New Billboard'
   const description = initialData ? 'Edit your billboard' : 'Create a new billboard'
@@ -72,7 +69,7 @@ const BillboardForm: FC<BillboardFormProps> = ({
     }
   }
 
-  const onDelete = async (data: BillboardFormValues) => {
+  const onDelete = async () => {
     try {
       setLoading(true)
       await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`)
