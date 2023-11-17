@@ -15,18 +15,45 @@ model Store {
   name       String
   userId     String
   billboards Billboard[] @relation("StoreToBillboard")
+  categories Category[]
+  variants   Variant[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
 
 model Billboard {
-  id        String   @id @default(uuid())
-  storeId   String
-  store     Store    @relation("StoreToBillboard", fields: [storeId], references: [id])
-  label     String
-  imageUrl  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String     @id @default(uuid())
+  storeId    String
+  store      Store      @relation("StoreToBillboard", fields: [storeId], references: [id])
+  label      String
+  imageUrl   String
+  categories Category[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
   @@index([storeId])
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  storeId     String
+  store       Store     @relation(fields: [storeId], references: [id])
+  billboardId String
+  billboard   Billboard @relation(fields: [billboardId], references: [id])
+  name        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([storeId])
+  @@index([billboardId])
+}
+
+model Variant {
+  id        String   @id @default(uuid())
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id])
+  name      String
+  options   String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
