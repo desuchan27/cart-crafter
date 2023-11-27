@@ -21,7 +21,7 @@ export async function GET(
 
         return NextResponse.json(variant)
     } catch (error) {
-        console.log('[CATEGORY_GET]', error)
+        console.log('[VARIANT_GET]', error)
         return new NextResponse('Internal server error', { status: 500 })
     }
 }
@@ -50,14 +50,6 @@ export async function PATCH(
             return new NextResponse("Variant id is required", { status: 400 });
         }
 
-        if (!option1) {
-            return new NextResponse("Option1 is required", { status: 400 });
-        }
-
-        if (!option2) {
-            return new NextResponse("Option2 is required", { status: 400 });
-        }
-
         const storeByUserId = await db.store.findFirst({
             where: {
                 id: params.storeId,
@@ -81,13 +73,15 @@ export async function PATCH(
         }
 
         // Update the variant with the existing options and the new options
+        const options = [...currentVariant.options, option1, option2].filter(Boolean);
+
         const updatedVariant = await db.variant.update({
             where: {
                 id: params.variantId,
             },
             data: {
                 name,
-                options: [...currentVariant.options, option1, option2],
+                options,
             },
         });
 

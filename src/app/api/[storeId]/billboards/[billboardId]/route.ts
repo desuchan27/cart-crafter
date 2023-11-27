@@ -43,8 +43,8 @@ export async function PATCH(
             return new NextResponse('Image is required', { status: 400 })
         }
 
-        if (!params.storeId) {
-            return new NextResponse('Store id is required', { status: 400 })
+        if (!params.billboardId) {
+            return new NextResponse('Billboard id is required', { status: 400 })
         }
 
         const storeByUserId = await db.store.findFirst({

@@ -17,6 +17,7 @@ model Store {
   billboards Billboard[] @relation("StoreToBillboard")
   categories Category[]
   variants   Variant[]
+  products   Product[]   @relation("StoreToProduct")
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
@@ -41,6 +42,7 @@ model Category {
   billboardId String
   billboard   Billboard @relation(fields: [billboardId], references: [id])
   name        String
+  products    Product[] @relation("CategoryToProduct")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -49,11 +51,42 @@ model Category {
 }
 
 model Variant {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   storeId   String
-  store     Store    @relation(fields: [storeId], references: [id])
+  store     Store     @relation(fields: [storeId], references: [id])
   name      String
   options   String[]
+  products  Product[] @relation("VariantToProduct")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Product {
+  id         String   @id @default(uuid())
+  storeId    String
+  store      Store    @relation("StoreToProduct", fields: [storeId], references: [id])
+  categoryId String
+  category   Category @relation("CategoryToProduct", fields: [categoryId], references: [id])
+  name       String
+  price      Decimal
+  isFeatured Boolean  @default(false)
+  isArchived Boolean  @default(false)
+  variantId  String
+  variant    Variant  @relation("VariantToProduct", fields: [variantId], references: [id])
+  images     Image[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([categoryId])
+  @@index([variantId])
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

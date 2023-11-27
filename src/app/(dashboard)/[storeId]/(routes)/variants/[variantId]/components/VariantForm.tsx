@@ -18,8 +18,8 @@ import AlertModal from "@/components/modals/alertModal"
 
 const formSchema = z.object({
   name: z.string().min(1),
-  option1: z.string().min(1),
-  option2: z.string().min(1),
+  option1: z.string().min(0).optional(),
+  option2: z.string().min(0).optional(),
 })
 
 interface VariantFormProps {

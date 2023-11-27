@@ -20,14 +20,6 @@ export async function POST(
             return new NextResponse("Name is required", { status: 400 })
         }
 
-        if (!option1) {
-            return new NextResponse("Option 1 is required", { status: 400 })
-        }
-
-        if (!option2) {
-            return new NextResponse("Option 2 is required", { status: 400 })
-        }
-
         if (!params.storeId) {
             return new NextResponse("Store is required", { status: 400 })
         }
@@ -43,13 +35,15 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 403 })
         }
 
+        const options = [option1, option2].filter(Boolean);
+
         const variant = await db.variant.create({
             data: {
                 name,
-                options: [option1, option2],
+                options,
                 storeId: params.storeId,
             },
-        })
+        });
 
         return NextResponse.json(variant)
 
