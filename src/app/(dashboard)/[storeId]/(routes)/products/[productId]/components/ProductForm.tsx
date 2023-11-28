@@ -208,7 +208,7 @@ const ProductForm: FC<ProductFormProps> = ({
                       <SelectTrigger>
                         <SelectValue
                           defaultValue={field.value}
-                          placeholder="Select a billboard"
+                          placeholder="Select Category"
                         />
                       </ SelectTrigger>
                     </FormControl>
