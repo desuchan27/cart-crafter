@@ -19,6 +19,7 @@ model Store {
   subcategories Subcategory[]
   products      Product[]     @relation("StoreToProduct")
   orders        Order[]       @relation("StoreToOrder")
+  productTypes  ProductType[] @relation("StoreToProductType")
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 }
@@ -71,6 +72,17 @@ model Subcategory {
   @@index([categoryId])
 }
 
+model ProductType {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  storeId   String
+  store     Store    @relation("StoreToProductType", fields: [storeId], references: [id])
+
+  products Product[] @relation("ProductTypeToProduct")
+}
+
 model Product {
   id            String      @id @default(uuid())
   storeId       String
@@ -79,6 +91,8 @@ model Product {
   category      Category    @relation("CategoryToProduct", fields: [categoryId], references: [id]) // Add this line
   subcategoryId String
   subcategory   Subcategory @relation("SubcategoryToProduct", fields: [subcategoryId], references: [id])
+  productTypeId String
+  productType   ProductType @relation("ProductTypeToProduct", fields: [productTypeId], references: [id])
   name          String
   price         Decimal
   isFeatured    Boolean     @default(false)

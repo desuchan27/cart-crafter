@@ -16,6 +16,7 @@ export async function POST(
             price,
             categoryId,
             subcategoryId,
+            productTypeId,
             images,
             isFeatured,
             isArchived,
@@ -49,6 +50,10 @@ export async function POST(
             return new NextResponse("Store is required", { status: 400 })
         }
 
+        if (!productTypeId) {
+            return new NextResponse("Type is required", { status: 400 })
+        }
+
         const storeByUserId = await db.store.findFirst({
             where: {
                 id: params.storeId,
@@ -66,6 +71,7 @@ export async function POST(
                 price,
                 categoryId,
                 subcategoryId,
+                productTypeId,
                 isFeatured,
                 isArchived,
                 storeId: params.storeId,
@@ -96,6 +102,7 @@ export async function GET(
         const { searchParams } = new URL(req.url)
         const categoryId = searchParams.get('categoryId') || undefined
         const subcategoryId = searchParams.get('subcategoryId') || undefined
+        const productTypeId = searchParams.get('productTypeId') || undefined
         const isFeatured = searchParams.get('isFeatured') || undefined
 
         if (!params.storeId) {
@@ -107,6 +114,7 @@ export async function GET(
                 storeId: params.storeId,
                 categoryId,
                 subcategoryId,
+                productTypeId,
                 isFeatured: isFeatured ? true : undefined,
                 isArchived: false,
             },
@@ -114,6 +122,7 @@ export async function GET(
                 images: true,
                 category: true,
                 subcategory: true,
+                productType: true,
             },
             orderBy: {
                 createdAt: 'desc'

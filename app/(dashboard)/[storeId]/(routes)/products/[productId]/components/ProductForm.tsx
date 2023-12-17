@@ -4,7 +4,7 @@ import * as z from "zod"
 import { Button } from '@/components/ui/button'
 import Heading from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
-import { Category, Image, Product, Subcategory } from '@prisma/client'
+import { Category, Image, Product, ProductType, Subcategory } from '@prisma/client'
 import { Trash } from 'lucide-react'
 import { FC, useState } from 'react'
 import { useForm } from "react-hook-form"
@@ -26,6 +26,7 @@ const formSchema = z.object({
   price: z.coerce.number().min(1),
   categoryId: z.string().min(1),
   subcategoryId: z.string().min(1),
+  productTypeId: z.string().min(1),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
 })
@@ -36,6 +37,7 @@ interface ProductFormProps {
   } | null
   categories: Category[]
   subcategories: Subcategory[]
+  productTypes: ProductType[]
 }
 
 type ProductFormValues = z.infer<typeof formSchema>
@@ -43,7 +45,8 @@ type ProductFormValues = z.infer<typeof formSchema>
 const ProductForm: FC<ProductFormProps> = ({
   initialData,
   categories,
-  subcategories
+  subcategories,
+  productTypes
 }) => {
   const params = useParams()
   const router = useRouter()
@@ -137,6 +140,7 @@ const ProductForm: FC<ProductFormProps> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
+
           <FormField
             control={form.control}
             name='images'
@@ -155,7 +159,9 @@ const ProductForm: FC<ProductFormProps> = ({
               </FormItem>
             )}
           />
+
           <div className="grid grid-cols-3 gap-8">
+
             <FormField
               control={form.control}
               name='name'
@@ -173,6 +179,7 @@ const ProductForm: FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name='price'
@@ -191,6 +198,7 @@ const ProductForm: FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name='categoryId'
@@ -226,6 +234,7 @@ const ProductForm: FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name='subcategoryId'
@@ -261,6 +270,43 @@ const ProductForm: FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name='productTypeId'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Select Product Type"
+                        />
+                      </ SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {productTypes.map((productType) => (
+                        <SelectItem
+                          key={productType.id}
+                          value={productType.id}
+                        >
+                          {`${productType.name}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </ Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name='isFeatured'
@@ -285,6 +331,7 @@ const ProductForm: FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name='isArchived'
@@ -309,6 +356,7 @@ const ProductForm: FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
+            
           </div>
           <Button disabled={loading} className='ml-auto' type='submit'>
             {action}

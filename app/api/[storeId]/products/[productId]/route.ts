@@ -16,6 +16,7 @@ export async function GET(
                 images: true,
                 category: true,
                 subcategory: true,
+                productType: true,
             }
         })
 
@@ -39,6 +40,7 @@ export async function PATCH(
             price,
             categoryId,
             subcategoryId,
+            productTypeId,
             images,
             isFeatured,
             isArchived,
@@ -62,6 +64,10 @@ export async function PATCH(
 
         if (!subcategoryId) {
             return new NextResponse("Subcategory is required", { status: 400 })
+        }
+
+        if (!productTypeId) {
+            return new NextResponse("Type is required", { status: 400 })
         }
 
         if (!images || !images.length) {
@@ -92,6 +98,7 @@ export async function PATCH(
                 price,
                 categoryId,
                 subcategoryId,
+                productTypeId,
                 isFeatured,
                 isArchived,
                 storeId: params.storeId,
