@@ -38,6 +38,7 @@ export async function PATCH(
         const {
             name,
             price,
+            quantity,
             categoryId,
             subcategoryId,
             productTypeId,
@@ -78,6 +79,10 @@ export async function PATCH(
             return new NextResponse('Product id is required', { status: 400 })
         }
 
+        if (!quantity) {
+            return new NextResponse('Quantity is required', { status: 400 })
+        }
+
         const storeByUserId = await db.store.findFirst({
             where: {
                 id: params.storeId,
@@ -96,6 +101,7 @@ export async function PATCH(
             data: {
                 name,
                 price,
+                quantity,
                 categoryId,
                 subcategoryId,
                 productTypeId,

@@ -31,6 +31,7 @@ const page = async ({
     category: item.category.name,
     subcategory: item.subcategory.name,
     price: formatter.format(item.price.toNumber()),
+    quantity: item.quantity.toString(),
 
     createdAt: format(new Date(item.createdAt), 'MMM do, yyyy')
   }))

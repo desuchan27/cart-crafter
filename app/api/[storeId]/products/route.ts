@@ -20,6 +20,7 @@ export async function POST(
             images,
             isFeatured,
             isArchived,
+            quantity
         } = body;
 
         if (!userId) {
@@ -54,6 +55,10 @@ export async function POST(
             return new NextResponse("Type is required", { status: 400 })
         }
 
+        if (!quantity) {
+            return new NextResponse("Quantity is required", { status: 400 })
+        }
+
         const storeByUserId = await db.store.findFirst({
             where: {
                 id: params.storeId,
@@ -69,6 +74,7 @@ export async function POST(
             data: {
                 name,
                 price,
+                quantity,
                 categoryId,
                 subcategoryId,
                 productTypeId,
@@ -104,6 +110,7 @@ export async function GET(
         const subcategoryId = searchParams.get('subcategoryId') || undefined
         const productTypeId = searchParams.get('productTypeId') || undefined
         const isFeatured = searchParams.get('isFeatured') || undefined
+        const quantity = Number(searchParams.get('quantity')) || undefined;
 
         if (!params.storeId) {
             return new NextResponse("Store is required", { status: 400 })
@@ -115,6 +122,7 @@ export async function GET(
                 categoryId,
                 subcategoryId,
                 productTypeId,
+                quantity,
                 isFeatured: isFeatured ? true : undefined,
                 isArchived: false,
             },

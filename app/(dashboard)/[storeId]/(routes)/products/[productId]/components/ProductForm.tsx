@@ -24,6 +24,7 @@ const formSchema = z.object({
   name: z.string().min(1),
   images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
+  quantity: z.coerce.number().min(1),
   categoryId: z.string().min(1),
   subcategoryId: z.string().min(1),
   productTypeId: z.string().min(1),
@@ -68,6 +69,7 @@ const ProductForm: FC<ProductFormProps> = ({
       name: '',
       images: [],
       price: 0,
+      quantity: 0,
       categoryId: '',
       isFeatured: false,
       isArchived: false,
@@ -353,6 +355,25 @@ const ProductForm: FC<ProductFormProps> = ({
                       This product will not appear anywhere in the Store
                     </FormDescription>
                   </div>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='quantity'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quantity</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      disabled={loading}
+                      placeholder="500"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />

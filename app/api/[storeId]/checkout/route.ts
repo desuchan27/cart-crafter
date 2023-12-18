@@ -24,44 +24,78 @@ export async function POST(
         return new NextResponse("Product ids are required", { status: 400 });
     }
 
-    const products = await db.product.findMany({
-        where: {
-            id: {
-                in: productIds
-            }
-        }
-    });
-
-    const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
-
-    products.forEach((product) => {
-        line_items.push({
-            quantity: 1,
-            price_data: {
-                currency: 'PHP',
-                product_data: {
-                    name: product.name,
-                },
-                unit_amount: product.price.toNumber() * 100
-            }
-        });
-    });
-
     const order = await db.order.create({
         data: {
             storeId: params.storeId,
             isPaid: false,
             orderItems: {
-                create: productIds.map((productId: string) => ({
+                create: productIds.map((product: { id: string, quantity: number }) => ({
                     product: {
                         connect: {
-                            id: productId
+                            id: product.id
                         }
-                    }
+                    },
+                    quantity: product.quantity
                 }))
             }
-        }
+        },
+        include: {
+            orderItems: true,
+        },
     });
+
+    const products = await db.product.findMany({
+        where: {
+            id: {
+                in: productIds.map((product: { id: string }) => product.id),
+            },
+        },
+    });
+
+    const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+
+    if (order.orderItems) {
+        order.orderItems.forEach((orderItem: { productId: string, quantity: number }) => {
+            const product = products.find((p) => p.id === orderItem.productId);
+            const quantity = orderItem.quantity || 1;
+
+            if (product) {
+                line_items.push({
+                    quantity,
+                    price_data: {
+                        currency: 'PHP',
+                        product_data: {
+                            name: product.name,
+                        },
+                        unit_amount: product.price.toNumber() * 100
+                    }
+                });
+            }
+        });
+    }
+
+
+    if (order.orderItems) {
+        order.orderItems.forEach((orderItem: any) => {
+            const product = products.find((p) => p.id === orderItem.productId);
+            const quantity = orderItem.quantity || 1;
+
+            if (product) {
+                line_items.push({
+                    quantity,
+                    price_data: {
+                        currency: 'PHP',
+                        product_data: {
+                            name: product.name,
+                        },
+                        unit_amount: product.price.toNumber() * 100
+                    }
+                });
+            }
+        });
+    }
+
+    const totalQuantity = line_items.reduce((total, item) => total + (item.quantity || 0), 0);
 
     const session = await stripe.checkout.sessions.create({
         line_items,
@@ -73,11 +107,13 @@ export async function POST(
         success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
         cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?canceled=1`,
         metadata: {
-            orderId: order.id
+            orderId: order.id,
+            quantity: totalQuantity.toString(),
         },
     });
+
 
     return NextResponse.json({ url: session.url }, {
         headers: corsHeaders
     });
-};
+}

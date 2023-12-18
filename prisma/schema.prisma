@@ -87,7 +87,7 @@ model Product {
   id            String      @id @default(uuid())
   storeId       String
   store         Store       @relation("StoreToProduct", fields: [storeId], references: [id])
-  categoryId    String // Add this line
+  categoryId    String
   category      Category    @relation("CategoryToProduct", fields: [categoryId], references: [id]) // Add this line
   subcategoryId String
   subcategory   Subcategory @relation("SubcategoryToProduct", fields: [subcategoryId], references: [id])
@@ -99,11 +99,12 @@ model Product {
   isArchived    Boolean     @default(false)
   images        Image[]
   orderItems    OrderItem[]
+  quantity      Int         @default(0)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
   @@index([storeId])
-  @@index([categoryId]) // Add this line
+  @@index([categoryId])
   @@index([subcategoryId])
 }
 
@@ -135,6 +136,7 @@ model OrderItem {
   order     Order   @relation(fields: [orderId], references: [id])
   productId String
   product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
 
   @@index([orderId])
   @@index([productId])
