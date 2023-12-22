@@ -74,27 +74,6 @@ export async function POST(
         });
     }
 
-
-    if (order.orderItems) {
-        order.orderItems.forEach((orderItem: any) => {
-            const product = products.find((p) => p.id === orderItem.productId);
-            const quantity = orderItem.quantity || 1;
-
-            if (product) {
-                line_items.push({
-                    quantity,
-                    price_data: {
-                        currency: 'PHP',
-                        product_data: {
-                            name: product.name,
-                        },
-                        unit_amount: product.price.toNumber() * 100
-                    }
-                });
-            }
-        });
-    }
-
     const totalQuantity = line_items.reduce((total, item) => total + (item.quantity || 0), 0);
 
     const session = await stripe.checkout.sessions.create({

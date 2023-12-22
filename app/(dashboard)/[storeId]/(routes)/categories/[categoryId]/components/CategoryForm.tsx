@@ -33,18 +33,17 @@ type CategoryFormValues = z.infer<typeof formSchema>
 const CategoryForm: FC<CategoryFormProps> = ({
   initialData,
   billboards
-
 }) => {
-  const params = useParams()
-  const router = useRouter()
+  const params = useParams();
+  const router = useRouter();
 
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const title = initialData ? 'Edit Category' : 'New Category'
-  const description = initialData ? 'Edit your Category' : 'Create a new Category'
-  const toastMessage = initialData ? 'Category updated succesfully' : 'Category created succesfully'
-  const action = initialData ? 'Save Changes' : 'Create'
+  const title = initialData ? 'Edit Category' : 'New Category';
+  const description = initialData ? 'Edit your Category' : 'Create a new Category';
+  const toastMessage = initialData ? 'Category updated successfully' : 'Category created successfully';
+  const action = initialData ? 'Save Changes' : 'Create';
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(formSchema),
@@ -52,40 +51,41 @@ const CategoryForm: FC<CategoryFormProps> = ({
       name: '',
       billboardId: ''
     }
-  })
+  });
 
   const onSubmit = async (data: CategoryFormValues) => {
     try {
-      setLoading(true)
+      setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/${params.storeId}/categories/${params.categoryId}`, data)
+        await axios.patch(`/api/${params.storeId}/categories/${params.categoryId}`, data);
       } else {
-        await axios.post(`/api/${params.storeId}/categories`, data)
+        // Use the correct API endpoint for creating a category
+        await axios.post(`/api/${params.storeId}/categories`, data);
       }
-      router.refresh()
-      router.push(`/${params.storeId}/categories`)
-      toast.success(toastMessage)
+      router.refresh();
+      router.push(`/${params.storeId}/categories`);
+      toast.success(toastMessage);
     } catch (error) {
-      toast.error("Something went wrong while saving your changes")
+      toast.error("Something went wrong while saving your changes");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const onDelete = async () => {
     try {
-      setLoading(true)
-      await axios.delete(`/api/${params.storeId}/categories/${params.categoryId}`)
-      router.refresh()
-      router.push(`/${params.storeId}/categories`)
-      toast.success("Category deleted.")
+      setLoading(true);
+      await axios.delete(`/api/${params.storeId}/categories/${params.categoryId}`);
+      router.refresh();
+      router.push(`/${params.storeId}/categories`);
+      toast.success("Category deleted.");
     } catch (error) {
-      toast.error("Make sure to removed all products using this category first.")
+      toast.error("Make sure to remove all products using this category first.");
     } finally {
-      setLoading(false)
-      setOpen(false)
+      setLoading(false);
+      setOpen(false);
     }
-  }
+  };
 
   return (
     <>

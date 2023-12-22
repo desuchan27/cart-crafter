@@ -3,42 +3,56 @@ import { format } from "date-fns";
 import db from "@/lib/db";
 import { formatter } from "@/lib/utils";
 
-import { OrderColumn } from "./components/columns"
+import { OrderColumn } from "./components/columns";
 import { OrderClient } from "./components/client";
 
-
 const OrdersPage = async ({
-  params
+  params,
 }: {
-  params: { storeId: string }
+  params: { storeId: string };
 }) => {
   const orders = await db.order.findMany({
     where: {
-      storeId: params.storeId
+      storeId: params.storeId,
     },
     include: {
       orderItems: {
         include: {
-          product: true
-        }
-      }
+          product: true,
+        },
+      },
     },
     orderBy: {
-      createdAt: 'desc'
-    }
+      createdAt: "desc",
+    },
   });
 
-  const formattedOrders: OrderColumn[] = orders.map((item) => ({
-    id: item.id,
-    phone: item.phone,
-    address: item.address,
-    products: item.orderItems.map((orderItem) => orderItem.product.name).join(', '),
-    totalPrice: formatter.format(item.orderItems.reduce((total, item) => {
-      return total + Number(item.product.price)
-    }, 0)),
-    isPaid: item.isPaid,
-    createdAt: format(item.createdAt, 'MMMM do, yyyy'),
-  }));
+  const formattedOrders: OrderColumn[] = orders.map((item) => {
+    const quantity = item.orderItems.reduce(
+      (total, orderItem) => total + orderItem.quantity,
+      0
+    );
+
+    return {
+      orderId: item.id,
+      id: item.id,
+      phone: item.phone,
+      address: item.address,
+      customerName: item.customerName,
+      products: item.orderItems
+        .map(
+          (orderItem) =>
+            `${orderItem.product.name} (${orderItem.quantity})`
+        )
+        .join(", "),
+      quantity, // renamed from totalQuantity to quantity
+      totalPrice: formatter.format(item.orderItems.reduce((total, item) => {
+        return total + Number(item.product.price)
+      }, 0)),
+      isPaid: item.isPaid,
+      createdAt: format(item.createdAt, 'MMMM do, yyyy'),
+    };
+});
 
   return (
     <div className="flex-col">

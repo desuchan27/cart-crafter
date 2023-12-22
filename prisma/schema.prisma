@@ -118,13 +118,14 @@ model Image {
 }
 
 model Order {
-  id         String      @id @default(uuid())
-  storeId    String
-  store      Store       @relation("StoreToOrder", fields: [storeId], references: [id])
-  orderItems OrderItem[]
-  isPaid     Boolean     @default(false)
-  phone      String      @default("")
-  address    String      @default("")
+  id           String      @id @default(uuid())
+  storeId      String
+  store        Store       @relation("StoreToOrder", fields: [storeId], references: [id])
+  orderItems   OrderItem[]
+  isPaid       Boolean     @default(false)
+  phone        String      @default("")
+  address      String      @default("")
+  customerName String      @default("")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
