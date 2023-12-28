@@ -14,7 +14,7 @@ npm install
 Setting up Environment Variables
 Create a .env file in the project root and add the following credentials:
 
-dotenv
+
 Copy code
 # Clerk Authentication
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
@@ -41,7 +41,6 @@ Note: Customize the values based on your specific configurations.
 Database Connection and Migration
 Generate Prisma client and apply migrations to the database:
 
-bash
-Copy code
+
 npx prisma generate
 npx prisma db push
