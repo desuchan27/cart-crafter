@@ -2,15 +2,15 @@ Project Setup Guide
 Cloning the Git Repository
 Clone the project repository using the following command:
 
-bash
 Copy code
 git clone https://github.com/desuchan27/asianwave-admin.git
+
+
 Installing Dependencies
 Install the required npm packages by running:
-
-bash
-Copy code
 npm install
+
+
 Setting up Environment Variables
 Create a .env file in the project root and add the following credentials:
 
