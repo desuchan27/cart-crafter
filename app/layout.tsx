@@ -8,8 +8,8 @@ import { ToasterProvider } from 'providers/toastProvider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: "Asianwave Admin",
-    description: "Manage your Asianwave store"
+    title: "Cart Craft",
+    description: "Craft your store!"
 }
 
 export default function RootLayout({
